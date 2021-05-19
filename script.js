@@ -20,9 +20,7 @@ function init() {
 }
 
 function setupSquares(item) {
-	var colors = [];
 	var squares = document.querySelectorAll(".square");
-	item.style.backgroundColor = colors[0];
 	item.addEventListener("click", function () {
 		var clickedColor = this.style.backgroundColor;
 		var resetButton = document.querySelector("#reset");
