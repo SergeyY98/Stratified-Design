@@ -8,8 +8,8 @@ function init() {
 	var squares = document.querySelectorAll(".square");
 	reset(numSquares);
 	colorDisplay.textContent = pickedColor;
-	forEachColors(setupSquares, squares.length);
-	forEachColors(setupMode, modeButtons.length);
+	forEach(setupSquares, squares);
+	forEach(setupMode, modeButtons);
 	resetButton.addEventListener("click", function() {
 		var numSquares = 6;
 		if (modeButtons[0].classList.contains("selected")) {
@@ -19,18 +19,18 @@ function init() {
 	});
 }
 
-function setupSquares(i) {
+function setupSquares(item) {
 	var colors = [];
 	var squares = document.querySelectorAll(".square");
-	squares[i].style.backgroundColor = colors[0];
-	squares[i].addEventListener("click", function () {
+	item.style.backgroundColor = colors[0];
+	item.addEventListener("click", function () {
 		var clickedColor = this.style.backgroundColor;
 		var resetButton = document.querySelector("#reset");
 		var messageDisplay = document.querySelector("#message");
 		if(clickedColor === pickedColor) {
 			messageDisplay.textContent = "Correct";
 			resetButton.textContent = "Play Again";
-			forEachColors(changeColors, squares.length, pickedColor);
+			forEach(changeColors, squares, pickedColor);
 		}
 		else {
 			this.style.backgroundColor = "#232323";
@@ -39,11 +39,11 @@ function setupSquares(i) {
 	});
 }
 
-function setupMode(i) {
+function setupMode(item) {
 	var modeButtons = document.querySelectorAll(".mode");
-	modeButtons[i].addEventListener("click", function() {
+	item.addEventListener("click", function() {
 		var numSquares = 6;
-		forEachColors(removeButtons, modeButtons.length, modeButtons);
+		forEach(removeButtons, modeButtons);
 		this.classList.add("selected");
 		if (this.textContent === "Easy") {
 			numSquares = 3;
@@ -52,8 +52,8 @@ function setupMode(i) {
 	});
 }
 
-function removeButtons(i, modeButtons) {
-	modeButtons[i].classList.remove("selected");
+function removeButtons(item) {
+	item.classList.remove("selected");
 }
 
 function reset(numSquares) {
@@ -62,27 +62,32 @@ function reset(numSquares) {
 	var resetButton = document.querySelector("#reset");
 	var squares = document.querySelectorAll(".square");
 	var h1 = document.querySelector("h1");
-	var colors = forEachColors(makeColor, numSquares);
+	var colors = makeColors(numSquares);
 	pickedColor = chooseColor(colors);
 	colorDisplay.textContent = pickedColor;
 	h1.style.backgroundColor = "#2C8E99";
 	resetButton.textContent = "New Colors";
 	messageDisplay.textContent = "";
-	forEachColors(checkColor, squares.length, colors);
+	forEach(checkColor, squares, colors);
 }
 
-function forEachColors(f, length, arg) {
+function makeColors(length) {
 	var arr = [];
 	for(var i = 0; i < length; i++) {
-		arr = push(arr, f(i, arg));
+		arr = push(arr, makeColor());
 	}
 	return arr;
 }
 
-function forEach(f, array) {
+function forEach(f, array, arg) {
 	for(var i = 0; i < array.length; i++) {
 	  var item = array[i];
-	  f(item, i);
+	  if(Array.isArray(arg)) {
+		f(item, arg[i]);
+	  }
+	  else {
+	  	f(item, arg);
+	  }
 	}
 }
 
@@ -98,21 +103,19 @@ function withArrayCopy(array, modify) {
 	return copy;
 }
 
-function changeColors(i, color) {
+function changeColors(item, color) {
 	var h1 = document.querySelector("h1");
-	var squares = document.querySelectorAll(".square");
-	squares[i].style.backgroundColor = color;
+	item.style.backgroundColor = color;
 	h1.style.backgroundColor = color;
 }
 
-function checkColor(i, colors) {
-	var squares = document.querySelectorAll(".square");
-	if(colors[i]) { 
-		squares[i].style.display = "block";
-		squares[i].style.backgroundColor = colors[i];
+function checkColor(item, arg) {
+	if(arg) { 
+		item.style.display = "block";
+		item.style.backgroundColor = arg;
 	}
 	else {
-		squares[i].style.display = "none";
+		item.style.display = "none";
 	}
 }
 
